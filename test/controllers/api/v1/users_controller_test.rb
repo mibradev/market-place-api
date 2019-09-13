@@ -40,4 +40,12 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal [I18n.t("errors.messages.invalid")], response.parsed_body["errors"]["email"]
   end
+
+  test "should destroy user" do
+    assert_difference("User.count", -1) do
+      delete api_v1_user_url(@user)
+    end
+
+    assert_response :no_content
+  end
 end
