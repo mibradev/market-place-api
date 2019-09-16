@@ -1,5 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy]
+  before_action :authorize_owner, only: [:update, :destroy]
 
   def show
     render json: @user
@@ -35,5 +36,9 @@ class Api::V1::UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:email, :password, :password_confirmation)
+    end
+
+    def authorize_owner
+      head :forbidden unless @user.id == current_user&.id
     end
 end
