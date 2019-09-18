@@ -1,0 +1,11 @@
+one:
+  title: Product 1
+  price: 9999.99
+  published: true
+  user: one
+
+two:
+  title: Product 2
+  price: 0.00
+  published: false
+  user: two

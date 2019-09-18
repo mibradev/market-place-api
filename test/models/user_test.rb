@@ -53,4 +53,10 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user1.valid?
     assert_equal [I18n.t("errors.messages.confirmation", attribute: "Password")], @user1.errors.messages[:password_confirmation]
   end
+
+  test "products destruction" do
+    assert @user1.products.count > 0
+    @user1.destroy
+    assert_equal 0, @user1.products.count
+  end
 end
