@@ -10,4 +10,9 @@ module Authenticatable
 
     @current_user = User.find_by_id(user_id)
   end
+
+  protected
+    def authenticate!
+      head :forbidden unless current_user.present?
+    end
 end
