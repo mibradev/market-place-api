@@ -8,7 +8,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   test "should show user" do
     get api_v1_user_url(@user1)
     assert_response :ok
-    assert_equal @user1.as_json, response.parsed_body
+    assert_equal @user1.email, response.parsed_body["data"]["attributes"]["email"]
   end
 
   test "should create user" do
@@ -17,7 +17,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :created
-    assert_equal "user@example.com", response.parsed_body["email"]
+    assert_equal "user@example.com", response.parsed_body["data"]["attributes"]["email"]
   end
 
   test "should update user" do
@@ -25,7 +25,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
       params: { user: { email: "user@example.com", password: "secret" } },
       headers: { "Authorization" => JsonWebToken.encode(user_id: @user1.id) }
     assert_response :ok
-    assert_equal "user@example.com", response.parsed_body["email"]
+    assert_equal "user@example.com", response.parsed_body["data"]["attributes"]["email"]
   end
 
   test "should destroy user" do
