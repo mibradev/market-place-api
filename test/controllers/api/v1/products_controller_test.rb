@@ -8,13 +8,20 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
   test "should show products" do
     get api_v1_products_url
     assert_response :ok
-    assert_equal Product.all.as_json, response.parsed_body
+
+    Product.all.each_with_index do |product, i|
+      assert_equal product.title, response.parsed_body["data"][i]["attributes"]["title"]
+      assert_equal product.price.to_s, response.parsed_body["data"][i]["attributes"]["price"]
+      assert_equal product.published, response.parsed_body["data"][i]["attributes"]["published"]
+    end
   end
 
   test "should show product" do
     get api_v1_product_url(@product)
     assert_response :ok
-    assert_equal @product.as_json, response.parsed_body
+    assert_equal @product.title, response.parsed_body["data"]["attributes"]["title"]
+    assert_equal @product.price.to_s, response.parsed_body["data"]["attributes"]["price"]
+    assert_equal @product.published, response.parsed_body["data"]["attributes"]["published"]
   end
 
   test "should not create product if unauthorized" do
@@ -44,7 +51,9 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :created
-    assert_equal @product.user_id, response.parsed_body["user_id"]
+    assert_equal @product.title, response.parsed_body["data"]["attributes"]["title"]
+    assert_equal @product.price.to_s, response.parsed_body["data"]["attributes"]["price"]
+    assert_equal @product.published, response.parsed_body["data"]["attributes"]["published"]
   end
 
   test "should not update product if unauthorized" do
@@ -74,7 +83,7 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
       headers: { "Authorization" => JsonWebToken.encode(user_id: @product.user_id) }
 
     assert_response :ok
-    assert_equal "#{@product.title}-2", response.parsed_body["title"]
+    assert_equal "#{@product.title}-2", response.parsed_body["data"]["attributes"]["title"]
   end
 
   test "should not destroy product if unauthorized" do
