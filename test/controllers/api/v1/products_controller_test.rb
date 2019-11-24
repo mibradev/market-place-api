@@ -10,9 +10,9 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
 
     Product.all.each_with_index do |product, i|
-      assert_equal product.title, response.parsed_body["data"][i]["attributes"]["title"]
-      assert_equal product.price.to_s, response.parsed_body["data"][i]["attributes"]["price"]
-      assert_equal product.published, response.parsed_body["data"][i]["attributes"]["published"]
+      assert_equal product.title, response.parsed_body.dig("data", i, "attributes", "title")
+      assert_equal product.price.to_s, response.parsed_body.dig("data", i, "attributes", "price")
+      assert_equal product.published, response.parsed_body.dig("data", i, "attributes", "published")
     end
   end
 
@@ -42,7 +42,7 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_equal ["title", "price"], response.parsed_body["errors"].keys
+    assert_equal ["title", "price"], response.parsed_body.dig("errors").keys
   end
 
   test "should create product" do
@@ -53,9 +53,9 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :created
-    assert_equal @product.title, response.parsed_body["data"]["attributes"]["title"]
-    assert_equal @product.price.to_s, response.parsed_body["data"]["attributes"]["price"]
-    assert_equal @product.published, response.parsed_body["data"]["attributes"]["published"]
+    assert_equal @product.title, response.parsed_body.dig("data", "attributes", "title")
+    assert_equal @product.price.to_s, response.parsed_body.dig("data", "attributes", "price")
+    assert_equal @product.published, response.parsed_body.dig("data", "attributes", "published")
   end
 
   test "should not update product if unauthorized" do
@@ -76,7 +76,7 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_equal ["title"], response.parsed_body["errors"].keys
+    assert_equal ["title"], response.parsed_body.dig("errors").keys
   end
 
   test "should update product" do
@@ -85,7 +85,7 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
       headers: { "Authorization" => JsonWebToken.encode(user_id: @product.user_id) }
 
     assert_response :ok
-    assert_equal "#{@product.title}-2", response.parsed_body["data"]["attributes"]["title"]
+    assert_equal "#{@product.title}-2", response.parsed_body.dig("data", "attributes", "title")
   end
 
   test "should not destroy product if unauthorized" do

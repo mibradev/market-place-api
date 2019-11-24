@@ -19,7 +19,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :created
-    assert_equal "user@example.com", response.parsed_body["data"]["attributes"]["email"]
+    assert_equal "user@example.com", response.parsed_body.dig("data", "attributes", "email")
   end
 
   test "should update user" do
@@ -27,7 +27,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
       params: { user: { email: "user@example.com", password: "secret" } },
       headers: { "Authorization" => JsonWebToken.encode(user_id: @user1.id) }
     assert_response :ok
-    assert_equal "user@example.com", response.parsed_body["data"]["attributes"]["email"]
+    assert_equal "user@example.com", response.parsed_body.dig("data", "attributes", "email")
   end
 
   test "should destroy user" do
@@ -44,7 +44,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_equal [I18n.t("errors.messages.taken")], response.parsed_body["errors"]["email"]
+    assert_equal [I18n.t("errors.messages.taken")], response.parsed_body.dig("errors", "email")
   end
 
   test "should not update user without token" do
@@ -65,7 +65,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
       params: { user: { email: "invalid", password: "secret" } },
       headers: { "Authorization" => JsonWebToken.encode(user_id: @user1.id) }
     assert_response :unprocessable_entity
-    assert_equal [I18n.t("errors.messages.invalid")], response.parsed_body["errors"]["email"]
+    assert_equal [I18n.t("errors.messages.invalid")], response.parsed_body.dig("errors", "email")
   end
 
   test "should not destroy user without token" do
