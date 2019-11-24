@@ -64,4 +64,20 @@ class ProductTest < ActiveSupport::TestCase
     products(:two).touch
     assert_equal products(:two), Product.recent.first
   end
+
+  test "searching without parameters" do
+    assert_equal Product.count, Product.search({}).count
+  end
+
+  test "searching for not existing product" do
+    assert Product.search(keyword: "missing").empty?
+  end
+
+  test "searching for cheap tv" do
+    assert_equal products(:tv2).id, Product.search(keyword: "tv", min_price: 50, max_price: 150).first.id
+  end
+
+  test "searching for ids" do
+    assert_equal [@product1], Product.search(product_ids: [@product1.id])
+  end
 end
