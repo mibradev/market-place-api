@@ -8,7 +8,9 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   test "should show user" do
     get api_v1_user_url(@user1)
     assert_response :ok
-    assert_equal @user1.email, response.parsed_body["data"]["attributes"]["email"]
+    assert_equal @user1.email, response.parsed_body.dig("data", "attributes", "email")
+    assert_equal @user1.products.first.id.to_s, response.parsed_body.dig("data", "relationships", "products", "data", 0, "id")
+    assert_equal @user1.products.first.title, response.parsed_body.dig("included", 0, "attributes", "title")
   end
 
   test "should create user" do
