@@ -49,4 +49,19 @@ class ProductTest < ActiveSupport::TestCase
     assert_not @product1.valid?
     assert_equal [I18n.t("errors.messages.required")], @product1.errors.messages[:user]
   end
+
+  test "filtering by title" do
+    assert_equal 2, Product.filter_by_title("tv").count
+  end
+
+  test "filtering by price" do
+    assert_equal 3, Product.above_or_equal_to_price(200).count
+    assert_equal 2, Product.below_or_equal_to_price(200).count
+  end
+
+  test "ordering by update date" do
+    assert_not_equal products(:two), Product.recent.first
+    products(:two).touch
+    assert_equal products(:two), Product.recent.first
+  end
 end
