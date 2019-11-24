@@ -19,9 +19,11 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
   test "should show product" do
     get api_v1_product_url(@product)
     assert_response :ok
-    assert_equal @product.title, response.parsed_body["data"]["attributes"]["title"]
-    assert_equal @product.price.to_s, response.parsed_body["data"]["attributes"]["price"]
-    assert_equal @product.published, response.parsed_body["data"]["attributes"]["published"]
+    assert_equal @product.title, response.parsed_body.dig("data", "attributes", "title")
+    assert_equal @product.price.to_s, response.parsed_body.dig("data", "attributes", "price")
+    assert_equal @product.published, response.parsed_body.dig("data", "attributes", "published")
+    assert_equal @product.user.id.to_s, response.parsed_body.dig("data", "relationships", "user", "data", "id")
+    assert_equal @product.user.email, response.parsed_body.dig("included", 0, "attributes", "email")
   end
 
   test "should not create product if unauthorized" do
