@@ -3,28 +3,20 @@ require 'test_helper'
 class OrderTest < ActiveSupport::TestCase
   setup do
     @order = orders(:one)
+    @product1 = products(:one)
+    @product2 = products(:two)
   end
 
   test "validity" do
     assert @order.valid?
   end
 
-  test "total presence" do
-    @order.total = nil
-    assert_not @order.valid?
-    assert_equal [I18n.t("errors.messages.blank")], @order.errors.messages[:total]
-  end
-
-  test "total minimum value" do
-    @order.total = -1
-    assert_not @order.valid?
-    assert_equal [I18n.t("errors.messages.greater_than_or_equal_to", count: 0.0)], @order.errors.messages[:total]
-  end
-
-  test "total maximum value" do
-    @order.total = 100000.00
-    assert_not @order.valid?
-    assert_equal [I18n.t("errors.messages.less_than_or_equal_to", count: 99999.99)], @order.errors.messages[:total]
+  test "total calculation" do
+    order = Order.new user_id: @order.user_id
+    order.products << products(:one)
+    order.products << products(:two)
+    order.save
+    assert_equal (@product1.price + @product2.price), order.total
   end
 
   test "total scale" do
