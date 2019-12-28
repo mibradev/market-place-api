@@ -43,12 +43,15 @@ class Api::V1::OrdersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create order" do
+    assert_equal 0, ActionMailer::Base.deliveries.count
+
     assert_difference("Order.count", 1) do
       post api_v1_orders_url(@order),
         params: @order_params,
         headers: { "Authorization" => JsonWebToken.encode(user_id: @order.user_id) }
     end
 
+    assert_equal 1, ActionMailer::Base.deliveries.count
     assert_response :created
   end
 end
