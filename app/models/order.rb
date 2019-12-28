@@ -4,5 +4,5 @@ class Order < ApplicationRecord
 
   belongs_to :user
   has_many :placements, dependent: :destroy
-  has_many :orders, through: :placements
+  has_many :products, through: :placements
 end
