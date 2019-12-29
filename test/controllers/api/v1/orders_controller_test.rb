@@ -6,8 +6,10 @@ class Api::V1::OrdersControllerTest < ActionDispatch::IntegrationTest
 
     @order_params = {
       order: {
-        product_ids: [products(:one).id, products(:two).id],
-        total: 50
+        product_ids_and_quantities: [
+          { product_id: products(:one).id, quantity: 2 },
+          { product_id: products(:two).id, quantity: 3 }
+        ]
       }
     }
   end
@@ -46,9 +48,11 @@ class Api::V1::OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, ActionMailer::Base.deliveries.count
 
     assert_difference("Order.count", 1) do
-      post api_v1_orders_url(@order),
-        params: @order_params,
-        headers: { "Authorization" => JsonWebToken.encode(user_id: @order.user_id) }
+      assert_difference("Placement.count", 2) do
+        post api_v1_orders_url(@order),
+          params: @order_params,
+          headers: { "Authorization" => JsonWebToken.encode(user_id: @order.user_id) }
+      end
     end
 
     assert_equal 1, ActionMailer::Base.deliveries.count

@@ -2,28 +2,33 @@ one:
   title: Product 1
   price: 9999.99
   published: true
+  quantity: 5
   user: one
 
 two:
   title: Product 2
   price: 0.00
   published: false
+  quantity: 5
   user: two
 
 tv1:
   title: TV Plosmo Philopps
   price: 9999.99
   published: false
+  quantity: 5
   user: one
 
 tv2:
   title: Cheap TV
   price: 99.99
   published: false
+  quantity: 5
   user: two
 
 last:
   title: Last Product
   price: 9999.99
   published: false
+  quantity: 5
   user: one
