@@ -22,7 +22,7 @@ class Api::V1::OrdersControllerTest < ActionDispatch::IntegrationTest
   test "should show orders" do
     get api_v1_orders_url, headers: { "Authorization" => JsonWebToken.encode(user_id: @order.user_id) }
     assert_response :ok
-    assert_equal @order.user.orders.count, response.parsed_body.length
+    assert_equal @order.user.orders.count, response.parsed_body["data"].length
   end
 
   test "should not show order if unauthorized" do
