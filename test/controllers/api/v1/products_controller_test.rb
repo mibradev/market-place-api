@@ -8,17 +8,13 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
   test "should show products" do
     get api_v1_products_url
     assert_response :ok
+    assert_paginated
 
     Product.all.each_with_index do |product, i|
       assert_equal product.title, response.parsed_body.dig("data", i, "attributes", "title")
       assert_equal product.price.to_s, response.parsed_body.dig("data", i, "attributes", "price")
       assert_equal product.published, response.parsed_body.dig("data", i, "attributes", "published")
     end
-
-    assert_not_nil response.parsed_body.dig("links", "first")
-    assert_not_nil response.parsed_body.dig("links", "last")
-    assert_not_nil response.parsed_body.dig("links", "prev")
-    assert_not_nil response.parsed_body.dig("links", "next")
   end
 
   test "should show product" do

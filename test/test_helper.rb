@@ -10,4 +10,11 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  def assert_paginated
+    assert_not_nil response.parsed_body.dig("links", "first")
+    assert_not_nil response.parsed_body.dig("links", "last")
+    assert_not_nil response.parsed_body.dig("links", "prev")
+    assert_not_nil response.parsed_body.dig("links", "next")
+  end
 end
