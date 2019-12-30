@@ -23,6 +23,11 @@ class Api::V1::OrdersControllerTest < ActionDispatch::IntegrationTest
     get api_v1_orders_url, headers: { "Authorization" => JsonWebToken.encode(user_id: @order.user_id) }
     assert_response :ok
     assert_equal @order.user.orders.count, response.parsed_body["data"].length
+
+    assert_not_nil response.parsed_body.dig("links", "first")
+    assert_not_nil response.parsed_body.dig("links", "last")
+    assert_not_nil response.parsed_body.dig("links", "prev")
+    assert_not_nil response.parsed_body.dig("links", "next")
   end
 
   test "should not show order if unauthorized" do
