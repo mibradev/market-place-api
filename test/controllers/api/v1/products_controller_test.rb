@@ -14,6 +14,11 @@ class Api::V1::ProductsControllerTest < ActionDispatch::IntegrationTest
       assert_equal product.price.to_s, response.parsed_body.dig("data", i, "attributes", "price")
       assert_equal product.published, response.parsed_body.dig("data", i, "attributes", "published")
     end
+
+    assert_not_nil response.parsed_body.dig("links", "first")
+    assert_not_nil response.parsed_body.dig("links", "last")
+    assert_not_nil response.parsed_body.dig("links", "prev")
+    assert_not_nil response.parsed_body.dig("links", "next")
   end
 
   test "should show product" do
